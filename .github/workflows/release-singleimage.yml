@@ -50,5 +50,5 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ichthysmaranatha/budi,ichthysmaranatha/budi:v${{ env.RELEASE_VERSION }}.10
+          tags: ichthysmaranatha/budi,ichthysmaranatha/budi:v${{ env.RELEASE_VERSION }}.01
           file: ./hosting/single/Dockerfile
