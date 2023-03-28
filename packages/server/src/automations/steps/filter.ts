@@ -2,6 +2,7 @@ import {
   AutomationActionStepId,
   AutomationStepSchema,
   AutomationStepInput,
+  autoparam,
 } from "@budibase/types"
 
 export const FilterConditions = {
@@ -18,9 +19,20 @@ export const PrettyFilterConditions = {
   [FilterConditions.LESS_THAN]: "Less than",
 }
 
+export const logictype = {
+  continue: "continue",
+  goto: "goto",
+}
+
+export const prettylogictype = {
+  [logictype.continue]: "Continue If",
+  [logictype.goto]: "Goto If",
+}
+
 export const definition: AutomationStepSchema = {
   name: "Condition",
-  tagline: "{{inputs.field}} {{inputs.condition}} {{inputs.value}}",
+  tagline:
+    "{{inputs.ltype}} {{inputs.field}} {{inputs.condition}} {{inputs.value}} {{inputs.gotovalue}}",
   icon: "Branch2",
   description:
     "Conditionally halt automations which do not meet certain conditions",
@@ -28,11 +40,18 @@ export const definition: AutomationStepSchema = {
   internal: true,
   stepId: AutomationActionStepId.FILTER,
   inputs: {
+    ltype: logictype.continue,
     condition: FilterConditions.EQUAL,
   },
   schema: {
     inputs: {
       properties: {
+        ltype: {
+          type: "string",
+          title: "Logic Type",
+          enum: Object.values(logictype),
+          pretty: Object.values(prettylogictype),
+        },
         field: {
           type: "string",
           title: "Reference Value",
@@ -47,8 +66,12 @@ export const definition: AutomationStepSchema = {
           type: "string",
           title: "Comparison Value",
         },
+        gotovalue: {
+          type: "string",
+          title: "Go to step no",
+        },
       },
-      required: ["field", "condition", "value"],
+      required: ["ltype", "field", "condition", "value"],
     },
     outputs: {
       properties: {
@@ -68,7 +91,7 @@ export const definition: AutomationStepSchema = {
 
 export async function run({ inputs }: AutomationStepInput) {
   try {
-    let { field, condition, value } = inputs
+    let { ltype, field, condition, value, gotovalue } = inputs
     // coerce types so that we can use them
     if (!isNaN(value) && !isNaN(field)) {
       value = parseFloat(value)
@@ -78,6 +101,11 @@ export async function run({ inputs }: AutomationStepInput) {
       field = Date.parse(field)
     }
     let result = false
+    if (
+      ltype == logictype.goto &&
+      !(gotovalue > 0 && gotovalue <= autoparam.maxstep)
+    )
+      return { success: true, result: true }
     if (typeof field !== "object" && typeof value !== "object") {
       switch (condition) {
         case FilterConditions.EQUAL:
@@ -93,6 +121,22 @@ export async function run({ inputs }: AutomationStepInput) {
           result = field < value
           break
       }
+    } else if (ltype == logictype.goto) {
+      switch (condition) {
+        case FilterConditions.EQUAL:
+          if (field === value) autoparam.stepno = gotovalue - 1
+          break
+        case FilterConditions.NOT_EQUAL:
+          if (field !== value) autoparam.stepno = gotovalue - 1
+          break
+        case FilterConditions.GREATER_THAN:
+          if (field > value) autoparam.stepno = gotovalue - 1
+          break
+        case FilterConditions.LESS_THAN:
+          if (field < value) autoparam.stepno = gotovalue - 1
+          break
+      }
+      return { success: true, result: true }
     } else {
       result = false
     }
