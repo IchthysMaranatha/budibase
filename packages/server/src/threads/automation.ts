@@ -13,7 +13,12 @@ import { generateAutomationMetadataID, isProdAppID } from "../db/utils"
 import { definitions as triggerDefs } from "../automations/triggerInfo"
 import { AutomationErrors, MAX_AUTOMATION_RECURRING_ERRORS } from "../constants"
 import { storeLog } from "../automations/logging"
-import { Automation, AutomationStep, AutomationStatus } from "@budibase/types"
+import {
+  Automation,
+  AutomationStep,
+  AutomationStatus,
+  autoparam,
+} from "@budibase/types"
 import {
   LoopStep,
   LoopInput,
@@ -31,6 +36,8 @@ const FILTER_STEP_ID = actions.ACTION_DEFINITIONS.FILTER.stepId
 const LOOP_STEP_ID = actions.ACTION_DEFINITIONS.LOOP.stepId
 const CRON_STEP_ID = triggerDefs.CRON.stepId
 const STOPPED_STATUS = { success: true, status: AutomationStatus.STOPPED }
+autoparam.stepno = 0
+autoparam.maxstep = 0
 
 function getLoopIterations(loopStep: LoopStep, input: LoopInput) {
   const binding = automationUtils.typecastForLooping(loopStep, input)
@@ -245,7 +252,10 @@ class Orchestrator {
       }
     }
 
-    for (let step of automation.definition.steps) {
+    for (let i = 0; i < automation.definition.steps.length; i++) {
+      step = automation.definition.steps[i]
+      autoparam.stepno = i + 1
+      autoparam.maxstep = automation.definition.steps.length
       stepCount++
       let input: any,
         iterations = 1,
@@ -454,6 +464,7 @@ class Orchestrator {
     if (isProdAppID(this._appId) && isRecurring(automation) && metadata) {
       await this.updateMetadata(metadata)
     }
+    i = autoparam.stepno - 1
     return this.executionOutput
   }
 }
