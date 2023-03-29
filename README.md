@@ -1,10 +1,18 @@
-This fork enables If Goto logic in actions. Allows for If-then-else and looping constructs. Docker image available here
+This fork enables If Goto logic in actions and automations. Allows for If-then-else and looping constructs. Docker image available here
 https://hub.docker.com/repository/docker/ichthysmaranatha/budi/tags?page=1&ordering=last_updated
 
 Files modified are
+
+Actions <br>
 /packages/client/src/utils/buttonActions.js
 /packages/builder/src/components/design/settings/controls/ButtonActionEditor/actions/ContinueIf.svelte
 /packages/builder/src/components/design/settings/controls/ButtonActionEditor/manifest.json
+
+Automation <br>
+/packages/server/src/automations/steps/filter.ts <br>
+/packages/server/src/threads/automation.ts <br>
+/packages/server/src/definitions/automations.ts <br>
+
 
 <p align="center">
   <a href="https://www.budibase.com">
