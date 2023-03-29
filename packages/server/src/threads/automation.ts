@@ -253,6 +253,7 @@ class Orchestrator {
       autoparam.stepno = i + 1
       autoparam.maxstep = automation.definition.steps.length
       stepCount++
+      if (stepCount > 1000) break
       let input: any,
         iterations = 1,
         iterationCount = 0
