@@ -2,8 +2,9 @@ import {
   AutomationActionStepId,
   AutomationStepSchema,
   AutomationStepInput,
-  autoparam,
 } from "@budibase/types"
+
+import { autoparam } from "../../definitions/automations"
 
 export const FilterConditions = {
   EQUAL: "EQUAL",
