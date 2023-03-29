@@ -119,4 +119,4 @@ export type AutomationStepInput = {
   apiKey?: string
 }
 
-export let autoparam = { stepno: 0, maxstep: 0 }
+export type autoparam = { stepno: number; maxstep: number }
