@@ -42,8 +42,8 @@
 
 <div class="root">
   <Body size="S">
-    Configure a condition to be evaluated which can stop further actions from
-    being executed.
+    Configure a condition to be evaluated which can stop further actions or jump
+    to another action.
   </Body>
   <Select
     bind:value={parameters.type}
