@@ -107,7 +107,11 @@ export async function run({ inputs }: AutomationStepInput) {
       !(gotovalue > 0 && gotovalue <= autoparam.maxstep)
     )
       return { success: true, result: true }
-    if (typeof field !== "object" && typeof value !== "object") {
+    if (
+      ltype == logictype.continue &&
+      typeof field !== "object" &&
+      typeof value !== "object"
+    ) {
       switch (condition) {
         case FilterConditions.EQUAL:
           result = field === value
