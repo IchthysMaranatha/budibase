@@ -253,7 +253,7 @@ class Orchestrator {
     }
 
     for (let i = 0; i < automation.definition.steps.length; i++) {
-      step = automation.definition.steps[i]
+      let step = automation.definition.steps[i]
       autoparam.stepno = i + 1
       autoparam.maxstep = automation.definition.steps.length
       stepCount++
@@ -457,6 +457,7 @@ class Orchestrator {
         wasLoopStep = true
         loopSteps = []
       }
+      i = autoparam.stepno - 1
     }
 
     // store the logs for the automation run
@@ -464,7 +465,6 @@ class Orchestrator {
     if (isProdAppID(this._appId) && isRecurring(automation) && metadata) {
       await this.updateMetadata(metadata)
     }
-    i = autoparam.stepno - 1
     return this.executionOutput
   }
 }
