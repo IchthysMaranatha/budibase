@@ -35,8 +35,7 @@ export const definition: AutomationStepSchema = {
   tagline:
     "{{inputs.ltype}} {{inputs.field}} {{inputs.condition}} {{inputs.value}} {{inputs.gotovalue}}",
   icon: "Branch2",
-  description:
-    "Conditionally halt automations which do not meet certain conditions",
+  description: "Conditionally halt automations or jump to another step",
   type: "LOGIC",
   internal: true,
   stepId: AutomationActionStepId.FILTER,
@@ -69,7 +68,7 @@ export const definition: AutomationStepSchema = {
         },
         gotovalue: {
           type: "string",
-          title: "Go to step no",
+          title: "Go to step no - valid only for Goto If",
         },
       },
       required: ["ltype", "field", "condition", "value"],
