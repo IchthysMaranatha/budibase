@@ -18,6 +18,7 @@ import { enrichDataBindings } from "./enrichDataBinding"
 import { Helpers } from "@budibase/bbui"
 let stepno = 0
 let maxaction = 0
+let maxiter = 0
 
 const saveRowHandler = async (action, context) => {
   const { fields, providerId, tableId, notificationOverride } =
@@ -429,6 +430,8 @@ export const enrichButtonActions = (actions, context) => {
         }
         stepno = i + 1
         maxaction = handlers.length
+        maxiter++
+        if (maxiter > 300) break
 
         // Built total context for this action
         const totalContext = {

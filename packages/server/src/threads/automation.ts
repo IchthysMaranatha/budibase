@@ -20,6 +20,7 @@ import {
   TriggerOutput,
   AutomationContext,
   AutomationMetadata,
+  autoparam,
 } from "../definitions/automations"
 import { WorkerCallback } from "./definitions"
 import { context, logging } from "@budibase/backend-core"
@@ -31,6 +32,8 @@ const FILTER_STEP_ID = actions.ACTION_DEFINITIONS.FILTER.stepId
 const LOOP_STEP_ID = actions.ACTION_DEFINITIONS.LOOP.stepId
 const CRON_STEP_ID = triggerDefs.CRON.stepId
 const STOPPED_STATUS = { success: true, status: AutomationStatus.STOPPED }
+autoparam.stepno = 0
+autoparam.maxstep = 0
 
 function getLoopIterations(loopStep: LoopStep, input: LoopInput) {
   const binding = automationUtils.typecastForLooping(loopStep, input)
@@ -245,8 +248,12 @@ class Orchestrator {
       }
     }
 
-    for (let step of automation.definition.steps) {
+    for (let i = 0; i < automation.definition.steps.length; i++) {
+      let step = automation.definition.steps[i]
+      autoparam.stepno = i + 1
+      autoparam.maxstep = automation.definition.steps.length
       stepCount++
+      if (stepCount > 1000) break
       let input: any,
         iterations = 1,
         iterationCount = 0
@@ -447,6 +454,7 @@ class Orchestrator {
         wasLoopStep = true
         loopSteps = []
       }
+      i = autoparam.stepno - 1
     }
 
     // store the logs for the automation run
