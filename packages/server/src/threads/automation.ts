@@ -34,6 +34,7 @@ const CRON_STEP_ID = triggerDefs.CRON.stepId
 const STOPPED_STATUS = { success: true, status: AutomationStatus.STOPPED }
 autoparam.stepno = 0
 autoparam.maxstep = 0
+maxiter = 0
 
 function getLoopIterations(loopStep: LoopStep, input: LoopInput) {
   const binding = automationUtils.typecastForLooping(loopStep, input)
@@ -252,8 +253,9 @@ class Orchestrator {
       let step = automation.definition.steps[i]
       autoparam.stepno = i + 1
       autoparam.maxstep = automation.definition.steps.length
-      stepCount = i
-      if (stepCount > 1000) break
+      stepCount = i + 1
+      maxiter++
+      if (maxiter > 1000) break
       let input: any,
         iterations = 1,
         iterationCount = 0
